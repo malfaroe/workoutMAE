@@ -215,7 +215,7 @@ private fun MetricCard(
     ) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Icon(icon, null, tint = color ?: MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
-            Row(verticalAlignment = Alignment.Baseline, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     text = valor,
                     style = MaterialTheme.typography.headlineSmall,

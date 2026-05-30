@@ -373,7 +373,7 @@ private fun AdherenciaBar(fraccion: Float) {
         else      -> DolorRojo
     }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Baseline) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text("$pct% de sesiones con colágeno registrado", style = MaterialTheme.typography.bodyMedium)
             Text(if (pct >= 80) "✓ Excelente" else if (pct >= 50) "Regular" else "Mejorar", style = MaterialTheme.typography.labelSmall, color = color, fontWeight = FontWeight.Bold)
         }

@@ -1,5 +1,6 @@
 package com.mae.workoutmae.ui.screen.ejercicios
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,7 +20,7 @@ import com.mae.workoutmae.data.db.entity.Ejercicio
 import com.mae.workoutmae.data.repository.EjercicioRepository
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EjerciciosScreen(ejercicioRepository: EjercicioRepository, onBack: () -> Unit) {
     val vm: EjerciciosViewModel = viewModel(factory = EjerciciosViewModel.factory(ejercicioRepository))

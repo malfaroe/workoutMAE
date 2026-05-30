@@ -1,5 +1,6 @@
 package com.mae.workoutmae.ui.navigation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -157,27 +158,25 @@ private fun MasScreen(
     onExportar: () -> Unit,
     onSettings: () -> Unit,
 ) {
+    data class MasItem(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector, val action: () -> Unit)
     val items = listOf(
-        Triple("Medidas corporales",   Icons.Filled.FitnessCenter,     onMedidas),
-        Triple("Gestionar ejercicios", Icons.Filled.SportsGymnastics,  onEjercicios),
-        Triple("Exportar datos",       Icons.Filled.Share,             onExportar),
-        Triple("Configuración",        Icons.Filled.Settings,          onSettings),
+        MasItem("Medidas corporales",   Icons.Filled.FitnessCenter,    onMedidas),
+        MasItem("Gestionar ejercicios", Icons.Filled.SportsGymnastics, onEjercicios),
+        MasItem("Exportar datos",       Icons.Filled.Share,            onExportar),
+        MasItem("Configuración",        Icons.Filled.Settings,         onSettings),
     )
     androidx.compose.foundation.lazy.LazyColumn {
         item { ListItem(headlineContent = { Text("Más opciones", style = MaterialTheme.typography.titleLarge) }) }
-        items.forEach { (label, icon, action) ->
+        items.forEach { item ->
             item {
                 ListItem(
-                    headlineContent = { Text(label) },
-                    leadingContent = { Icon(icon, null) },
+                    headlineContent = { Text(item.label) },
+                    leadingContent = { Icon(item.icon, null) },
                     trailingContent = { Icon(Icons.Filled.ChevronRight, null) },
-                    modifier = androidx.compose.ui.Modifier.clickable(onClick = action),
+                    modifier = Modifier.clickable { item.action() },
                 )
                 HorizontalDivider()
             }
         }
     }
 }
-
-private fun androidx.compose.ui.Modifier.clickable(onClick: () -> Unit) =
-    this.then(androidx.compose.ui.Modifier.clickable(onClick = onClick))
