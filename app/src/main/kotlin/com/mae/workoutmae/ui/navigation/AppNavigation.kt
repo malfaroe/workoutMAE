@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.mae.workoutmae.data.preferences.PreferencesManager
@@ -18,6 +19,7 @@ import com.mae.workoutmae.ui.screen.dashboard.DashboardScreen
 import com.mae.workoutmae.ui.screen.ejercicios.EjerciciosScreen
 import com.mae.workoutmae.ui.screen.historial.HistorialScreen
 import com.mae.workoutmae.ui.screen.medidas.MedidasScreen
+import com.mae.workoutmae.ui.screen.onboarding.OnboardingScreen
 import com.mae.workoutmae.ui.screen.progreso.ProgresoScreen
 import com.mae.workoutmae.ui.screen.registro.RegistroScreen
 import com.mae.workoutmae.ui.screen.settings.SettingsScreen
@@ -37,6 +39,22 @@ private val bottomNavItems = listOf(Ruta.Dashboard, Ruta.Progreso, Ruta.Historia
 
 @Composable
 fun AppNavigation(
+    sesionRepository: SesionRepository,
+    medidaRepository: MedidaRepository,
+    ejercicioRepository: EjercicioRepository,
+    preferencesManager: PreferencesManager,
+) {
+    val onboardingOk by preferencesManager.onboardingCompletado.collectAsStateWithLifecycle(false)
+
+    if (!onboardingOk) {
+        OnboardingScreen(preferencesManager = preferencesManager)
+    } else {
+        MainNavigation(sesionRepository, medidaRepository, ejercicioRepository, preferencesManager)
+    }
+}
+
+@Composable
+private fun MainNavigation(
     sesionRepository: SesionRepository,
     medidaRepository: MedidaRepository,
     ejercicioRepository: EjercicioRepository,

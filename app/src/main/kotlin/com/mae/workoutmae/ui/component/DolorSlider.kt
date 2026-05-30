@@ -23,6 +23,7 @@ fun DolorSlider(
     onValorChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
     label: String = "Dolor (0–10)",
+    enabled: Boolean = true,
 ) {
     Column(modifier = modifier) {
         Row(
@@ -30,12 +31,17 @@ fun DolorSlider(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(label, style = MaterialTheme.typography.labelMedium)
+            Text(
+                label,
+                style = MaterialTheme.typography.labelMedium,
+                color = if (enabled) MaterialTheme.colorScheme.onSurface
+                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            )
             Text(
                 text = valor.toString(),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = dolorColor(valor),
+                color = if (enabled) dolorColor(valor) else dolorColor(valor).copy(alpha = 0.4f),
             )
         }
         Spacer(Modifier.height(8.dp))
@@ -45,25 +51,30 @@ fun DolorSlider(
         ) {
             for (i in 0..10) {
                 val seleccionado = i == valor
+                val alpha = if (enabled) 1f else 0.35f
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .aspectRatio(1f)
                         .clip(CircleShape)
-                        .background(if (seleccionado) dolorColor(i) else dolorColor(i).copy(alpha = 0.18f))
+                        .background(
+                            if (seleccionado) dolorColor(i).copy(alpha = alpha)
+                            else dolorColor(i).copy(alpha = 0.18f * alpha)
+                        )
                         .border(
                             width = if (seleccionado) 2.dp else 0.dp,
-                            color = if (seleccionado) dolorColor(i) else Color.Transparent,
+                            color = if (seleccionado) dolorColor(i).copy(alpha = alpha) else Color.Transparent,
                             shape = CircleShape,
                         )
-                        .clickable { onValorChange(i) },
+                        .then(if (enabled) Modifier.clickable { onValorChange(i) } else Modifier),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = i.toString(),
                         fontSize = 11.sp,
                         fontWeight = if (seleccionado) FontWeight.Bold else FontWeight.Normal,
-                        color = if (seleccionado) Color.White else dolorColor(i),
+                        color = if (seleccionado) Color.White.copy(alpha = alpha)
+                                else dolorColor(i).copy(alpha = alpha),
                     )
                 }
             }

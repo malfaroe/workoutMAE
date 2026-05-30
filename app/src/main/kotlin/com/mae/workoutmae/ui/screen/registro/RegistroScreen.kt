@@ -31,6 +31,7 @@ fun RegistroScreen(
     val vm: RegistroViewModel = viewModel(factory = RegistroViewModel.factory(sesionRepository))
     val s by vm.sesion.collectAsStateWithLifecycle()
     val guardado by vm.guardado.collectAsStateWithLifecycle()
+    val puedeEditarDolorPost by vm.puedeEditarDolorPost.collectAsStateWithLifecycle()
 
     LaunchedEffect(sesionId) { vm.cargar(sesionId) }
     LaunchedEffect(guardado) { if (guardado) onGuardado() }
@@ -98,7 +99,15 @@ fun RegistroScreen(
                             valor = s.dolorPost ?: 0,
                             onValorChange = { vm.update(s.copy(dolorPost = it)) },
                             label = "Post / mañana siguiente",
+                            enabled = puedeEditarDolorPost,
                         )
+                        if (!puedeEditarDolorPost) {
+                            Text(
+                                "🔒 Bloqueado — más de 48h desde el registro",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                         OutlinedTextField(
                             value = s.descripcionDolor ?: "",
                             onValueChange = { vm.update(s.copy(descripcionDolor = it.takeIf { it.isNotBlank() })) },

@@ -10,7 +10,9 @@ import com.mae.workoutmae.data.repository.SesionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 class RegistroViewModel(private val repo: SesionRepository) : ViewModel() {
 
@@ -20,10 +22,18 @@ class RegistroViewModel(private val repo: SesionRepository) : ViewModel() {
     private val _guardado = MutableStateFlow(false)
     val guardado = _guardado.asStateFlow()
 
+    // dolorPost is only editable within 48h of session creation
+    private val _puedeEditarDolorPost = MutableStateFlow(true)
+    val puedeEditarDolorPost = _puedeEditarDolorPost.asStateFlow()
+
     fun cargar(id: Int) {
         if (id == 0) return
         viewModelScope.launch {
-            repo.porId(id)?.let { _sesion.value = it }
+            repo.porId(id)?.let {
+                _sesion.value = it
+                val horas = ChronoUnit.HOURS.between(Instant.ofEpochMilli(it.creadoEn), Instant.now())
+                _puedeEditarDolorPost.value = horas < 48
+            }
         }
     }
 
