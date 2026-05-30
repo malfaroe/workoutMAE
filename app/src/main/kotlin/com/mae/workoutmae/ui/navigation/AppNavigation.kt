@@ -19,6 +19,7 @@ import com.mae.workoutmae.ui.screen.dashboard.DashboardScreen
 import com.mae.workoutmae.ui.screen.ejercicios.EjerciciosScreen
 import com.mae.workoutmae.ui.screen.historial.HistorialScreen
 import com.mae.workoutmae.ui.screen.medidas.MedidasScreen
+import com.mae.workoutmae.ui.screen.export.ExportScreen
 import com.mae.workoutmae.ui.screen.onboarding.OnboardingScreen
 import com.mae.workoutmae.ui.screen.progreso.ProgresoScreen
 import com.mae.workoutmae.ui.screen.registro.RegistroScreen
@@ -32,6 +33,7 @@ sealed class Ruta(val path: String, val label: String, val icon: ImageVector) {
     object Registro  : Ruta("registro/{sesionId}", "Registrar", Icons.Filled.Add)
     object Medidas   : Ruta("medidas", "Medidas", Icons.Filled.FitnessCenter)
     object Ejercicios: Ruta("ejercicios", "Ejercicios", Icons.Filled.SportsGymnastics)
+    object Exportar  : Ruta("exportar", "Exportar", Icons.Filled.Share)
     object Settings  : Ruta("settings", "Configuración", Icons.Filled.Settings)
 }
 
@@ -123,6 +125,7 @@ private fun MainNavigation(
                 MasScreen(
                     onMedidas    = { navController.navigate(Ruta.Medidas.path) },
                     onEjercicios = { navController.navigate(Ruta.Ejercicios.path) },
+                    onExportar   = { navController.navigate(Ruta.Exportar.path) },
                     onSettings   = { navController.navigate(Ruta.Settings.path) },
                 )
             }
@@ -131,6 +134,14 @@ private fun MainNavigation(
             }
             composable(Ruta.Ejercicios.path) {
                 EjerciciosScreen(ejercicioRepository = ejercicioRepository, onBack = { navController.popBackStack() })
+            }
+            composable(Ruta.Exportar.path) {
+                ExportScreen(
+                    sesionRepository = sesionRepository,
+                    medidaRepository = medidaRepository,
+                    preferencesManager = preferencesManager,
+                    onBack = { navController.popBackStack() },
+                )
             }
             composable(Ruta.Settings.path) {
                 SettingsScreen(preferencesManager = preferencesManager, ejercicioRepository = ejercicioRepository, onBack = { navController.popBackStack() })
@@ -143,12 +154,14 @@ private fun MainNavigation(
 private fun MasScreen(
     onMedidas: () -> Unit,
     onEjercicios: () -> Unit,
+    onExportar: () -> Unit,
     onSettings: () -> Unit,
 ) {
     val items = listOf(
-        Triple("Medidas corporales", Icons.Filled.FitnessCenter, onMedidas),
-        Triple("Gestionar ejercicios", Icons.Filled.SportsGymnastics, onEjercicios),
-        Triple("Configuración", Icons.Filled.Settings, onSettings),
+        Triple("Medidas corporales",   Icons.Filled.FitnessCenter,     onMedidas),
+        Triple("Gestionar ejercicios", Icons.Filled.SportsGymnastics,  onEjercicios),
+        Triple("Exportar datos",       Icons.Filled.Share,             onExportar),
+        Triple("Configuración",        Icons.Filled.Settings,          onSettings),
     )
     androidx.compose.foundation.lazy.LazyColumn {
         item { ListItem(headlineContent = { Text("Más opciones", style = MaterialTheme.typography.titleLarge) }) }
